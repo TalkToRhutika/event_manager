@@ -33,7 +33,17 @@ Negative pagination should be handled correctly.
 Resolution: Handled the pagination issue.
 
 ## Test Coverage
+[![Image Alt Text](coverage_10.png)](http://link-url.com)
 
 
 ## Docker
+[![Image Alt Text](coverage_10.png)](http://link-url.com)
 
+## Learnings from the Assignment
+This assignment provided valuable insights into both technical implementation and collaborative development practices. I deepened my understanding of REST APIs, particularly in implementing secure JWT-based OAuth2 authentication to manage user access and protect data.
+
+Improving test coverage to 90% enhanced my skills in unit, integration, and end-to-end testing. This reinforced the value of automated tests in ensuring system stability and identifying potential bugs early.
+
+On the collaboration front, I gained hands-on experience with Git workflows, branch management, and code reviews via pull requests. Utilizing GitHub Issues highlighted the importance of clear documentation and effective team communication.
+
+Additionally, debugging complex issues—such as username validation, password hashing, and profile field edge cases—sharpened my problem-solving abilities and underscored the importance of thorough validation for system reliability.
