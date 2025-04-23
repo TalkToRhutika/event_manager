@@ -1,9 +1,8 @@
-from builtins import ValueError, any, bool, str
-from pydantic import BaseModel, EmailStr, Field, validator, root_validator
-from typing import Optional, List
+from pydantic import BaseModel, Field, validator, root_validator,EmailStr
+from typing import List, Optional
+import uuid
 from datetime import datetime
 from enum import Enum
-import uuid
 import re
 
 from app.utils.nickname_gen import generate_nickname
@@ -24,7 +23,7 @@ def validate_url(url: Optional[str]) -> Optional[str]:
 
 class UserBase(BaseModel):
     email: EmailStr = Field(..., example="john.doe@example.com")
-    nickname: Optional[str] = Field(None, min_length=3,max_length=30, pattern=r'^[\w-]+$', example=generate_nickname())
+    nickname: Optional[str] = Field(None, min_length=3, max_length=30, pattern=r'^[\w-]+$', example=generate_nickname())
     first_name: Optional[str] = Field(None, example="John")
     last_name: Optional[str] = Field(None, example="Doe")
     bio: Optional[str] = Field(None, example="Experienced software developer specializing in web applications.")
@@ -33,16 +32,16 @@ class UserBase(BaseModel):
     github_profile_url: Optional[str] = Field(None, example="https://github.com/johndoe")
     
     _validate_urls = validator('profile_picture_url', 'linkedin_profile_url', 'github_profile_url', pre=True, allow_reuse=True)(validate_url)
- 
+
     class Config:
         from_attributes = True
 
 class UserCreate(UserBase):
-    email: EmailStr = Field(..., example="john.doe@example.com")
+    email: str = Field(..., example="john.doe@example.com")
     password: str = Field(..., example="Secure*1234")
 
 class UserUpdate(UserBase):
-    email: Optional[EmailStr] = Field(None, example="john.doe@example.com")
+    email: Optional[str] = Field(None, example="john.doe@example.com")
     nickname: Optional[str] = Field(None, min_length=3, max_length=30, pattern=r'^[\w-]+$', example="john_doe123")
     first_name: Optional[str] = Field(None, example="John")
     last_name: Optional[str] = Field(None, example="Doe")
@@ -71,6 +70,25 @@ class ErrorResponse(BaseModel):
     error: str = Field(..., example="Not Found")
     details: Optional[str] = Field(None, example="The requested resource was not found.")
 
+# Simple Pagination Validation
+class Pagination(BaseModel):
+    page: int = Field(default=1, ge=1, example=1)
+    size: int = Field(default=10, ge=1, le=100, example=10)
+
+    @validator("page")
+    def validate_page(cls, value):
+        if value < 1:
+            raise ValueError("Page number must be a positive integer.")
+        return value
+
+    @validator("size")
+    def validate_size(cls, value):
+        if value < 1:
+            raise ValueError("Page size must be a positive integer.")
+        if value > 100:  # Set a maximum page size limit
+            raise ValueError("Page size exceeds the maximum limit of 100.")
+        return value
+
 class UserListResponse(BaseModel):
     items: List[UserResponse] = Field(..., example=[{
         "id": uuid.uuid4(), "nickname": generate_nickname(), "email": "john.doe@example.com",
@@ -82,4 +100,10 @@ class UserListResponse(BaseModel):
     total: int = Field(..., example=100)
     page: int = Field(..., example=1)
     size: int = Field(..., example=10)
+
+    @root_validator(pre=True)
+    def calculate_total_pages(cls, values):
+        total, size = values.get("total"), values.get("size")
+        values["total_pages"] = (total + size - 1) // size  # Calculate total pages
+        return values
     
