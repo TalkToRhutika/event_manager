@@ -33,11 +33,12 @@ Negative pagination should be handled correctly.
 Resolution: Handled the pagination issue.
 
 ## Test Coverage
-[![Image Alt Text](coverage_10.png)](http://link-url.com)
+[![Image Alt Text](coverage_10.png)]
 
 
 ## Docker
-[![Image Alt Text](coverage_10.png)](http://link-url.com)
+[![Image Alt Text](docker_10.png)]
+
 
 ## Learnings from the Assignment
 This assignment provided valuable insights into both technical implementation and collaborative development practices. I deepened my understanding of REST APIs, particularly in implementing secure JWT-based OAuth2 authentication to manage user access and protect data.
