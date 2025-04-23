@@ -237,11 +237,11 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), session: Async
 
 
 @router.get("/verify-email/{email}/{token}", status_code=status.HTTP_200_OK, name="verify_email", tags=["Login and Registration"])
-async def verify_email(user_id: UUID, token: str, db: AsyncSession = Depends(get_db), email_service: EmailService = Depends(get_email_service)):
+async def verify_email(email: str, token: str, db: AsyncSession = Depends(get_db), email_service: EmailService = Depends(get_email_service)):
     """
     Verify user's email with a provided token.
     
-    - **user_id**: UUID of the user to verify.
+    - **email**: email of the user.
     - **token**: Verification token sent to the user's email.
     """
     if await UserService.verify_email_with_token(db, email, token):

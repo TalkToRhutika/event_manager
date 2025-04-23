@@ -4,7 +4,6 @@ from app.services.email_service import EmailService
 from app.utils.template_manager import TemplateManager
 from app.models.user_model import User
 
-
 @pytest.fixture
 def email_service():
     """Fixture to mock the EmailService."""
@@ -15,8 +14,9 @@ def email_service():
     service = EmailService(template_manager=template_manager)
     
     # Mock the send_email method to avoid actually sending emails
-    service.smtp_client.send_email = MagicMock()
-    
+    #service.smtp_client.send_email = MagicMock()
+    service.smtp_client.send_email = MagicMock(return_value=True)
+
     return service
 
 @pytest.mark.asyncio
